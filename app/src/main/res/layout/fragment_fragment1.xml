@@ -15,6 +15,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:text="TextView"
+        android:textColor="@color/sendotp_grey"
         android:layout_alignParentRight="true" />
 
     <TextView
@@ -24,6 +25,7 @@
         android:layout_alignParentTop="true"
         android:layout_toStartOf="@+id/date"
         android:text="TextView"
+        android:textColor="@color/sendotp_grey"
         android:layout_toLeftOf="@+id/date" />
 
     <android.support.v7.widget.RecyclerView

@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +31,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.android.volley.VolleyLog.TAG;
 
 
 /**
@@ -58,12 +59,14 @@ public class fragment1 extends Fragment {
     private String mParam1;
     private String mParam2;
     public RecyclerView recyclerView;
-    final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+    List<ListData> data;
     JSONArray myjsonarray;
+    JSONObject myjsonObject;
     public int A = 0;
     JSONObject mjsonobject;
     JSONArray mjsonarr;
-
+    LinearLayoutManager linearLayoutManager;
+    Adapter  mAdapter;
     //private OnFragmentInteractionListener mListener;
 
     public fragment1() {
@@ -95,10 +98,98 @@ public class fragment1 extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        final View rootView = inflater.inflate(R.layout.fragment_fragment1, container, false);
+        data=new ArrayList<>();
+        recyclerView=rootView.findViewById(R.id.recycler);
+        linearLayoutManager=new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        //  recyclerView.setHasFixedSize(true);
+        new Setuprecyclerview().execute();
+//        mAdapter= new Adapter(getContext(), data);
+//        recyclerView.setAdapter(mAdapter);
+
+        recyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(getContext(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Intent intentBundle = new Intent(getContext(), judgement_activity_1.class);
+                        try {
+                            mjsonobject= mjsonarr.getJSONObject(position);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        intentBundle.putExtra("jsonobj",mjsonobject.toString());
+                        //intentBundle.putStringArrayListExtra("dimension2", ((ArrayList) dimension2.get(position))); // Very Very Important To Understand //
+                        startActivity(intentBundle);
+                        //Toast.makeText(getContext(),"hi",Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                        // do whatever
+                        //  Toast.makeText(getContext(), dimension2.get(position).toString(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+        );
+
+        partnumber=rootView.findViewById(R.id.partnumber);
+        date=rootView.findViewById(R.id.date);
+
+        //linearLayoutManager=recyclerView.getLayoutManager();
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                //linearLayoutManager=recyclerView.getLayoutManager();
+                int currentFirstVisible = linearLayoutManager.findFirstVisibleItemPosition();
+                Log.d(TAG, "onScrolled: currentfistvisibleelemenr"+currentFirstVisible);
+                Log.d(TAG, "onScrolled: lastknownuwbjbwibwibwbjwbi"+linearLayoutManager.findLastCompletelyVisibleItemPosition());
+                try {
+                    myjsonObject = myjsonarray.getJSONObject(linearLayoutManager.findLastCompletelyVisibleItemPosition());
+
+                    String partnO = new String();
+                    String partdate = new String();
+
+                    if (myjsonObject.has("partNo")) {
+                        partnO = myjsonObject.getString("partNo");
+
+                    }
+
+                    if (myjsonObject.has("partdate")) {
+                        partdate = myjsonObject.getString("partdate");
+                    }
+
+                    partnumber.setText("Part Number: " + partnO + ",");
+                    date.setText(" Date: " + partdate);
+
+//                    partnumber.setTextAppearance(R.style.nimbusromno9lreg);
+//                    date.setTextAppearance(R.style.nimbusromno9lreg);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                if (currentFirstVisible > firstVisibleInListview)
+                    Log.i("RecyclerView scrolled: ", "scroll up!");
+                else
+                    Log.i("RecyclerView scrolled: ", "scroll down!");
+
+                firstVisibleInListview = currentFirstVisible;
+
+            }
+
+        });
+        return rootView;
+        // return inflater.inflate(R.layout.fragment_fragment1, container, false);
+    }
 
     public class Setuprecyclerview extends AsyncTask<String,String,String>
     {
@@ -117,7 +208,6 @@ public class fragment1 extends Fragment {
         protected String doInBackground(String... strings) {
 
             //check for correct url
-
             try {
                 // Enter URL address where your json file resides
                 // Even you can make call to php file which returns json data
@@ -130,7 +220,6 @@ public class fragment1 extends Fragment {
             }
 
             //set up connection
-
             try {
                 // Setup HttpURLConnection class to send and receive data from php and mysql
                 conn = (HttpURLConnection) url.openConnection();
@@ -191,7 +280,8 @@ public class fragment1 extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            List<ListData> data=new ArrayList<>();
+
+//            data=new ArrayList<>();
             progressDialog.dismiss();
 
             try {
@@ -205,124 +295,20 @@ public class fragment1 extends Fragment {
                     t2=json_data.getString("jud");
                     t3=json_data.getString("dt")+"/"+json_data.getString("mn")+"/"+json_data.getString("yer");
                     ListData listdata=new ListData(t1,t2,t3);
+                    Log.d(TAG, "onPostExecute: pata ni qa problem hai");
                     data.add(listdata);
                 }
-
                 // Setup and Handover data to recyclerview
-
-                Adapter  mAdapter = new Adapter(getContext(), data);
+                mAdapter= new Adapter(getContext(), data);
                 recyclerView.setAdapter(mAdapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
+//                RecyclerViewPositionHelper recyclerViewPositionHelper=new RecyclerViewPositionHelper(recyclerView);
+//                recyclerViewPositionHelper.
 
             } catch (JSONException e) {
                 Toast.makeText( getContext(), e.toString(), Toast.LENGTH_LONG).show();
             }
 
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
-        final View rootView = inflater.inflate(R.layout.fragment_fragment1, container, false);
-
-        recyclerView=rootView.findViewById(R.id.recycler);
-        recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(getContext(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Intent intentBundle = new Intent(getContext(), judgement_activity_1.class);
-                        try {
-                            mjsonobject= mjsonarr.getJSONObject(position);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        intentBundle.putExtra("jsonobj",mjsonobject.toString());
-                        //intentBundle.putStringArrayListExtra("dimension2", ((ArrayList) dimension2.get(position))); // Very Very Important To Understand //
-                        startActivity(intentBundle);
-                        //Toast.makeText(getContext(),"hi",Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                        // do whatever
-
-                        //  Toast.makeText(getContext(), dimension2.get(position).toString(), Toast.LENGTH_SHORT).show();
-                    }
-                })
-        );
-        partnumber=rootView.findViewById(R.id.partnumber);
-        date=rootView.findViewById(R.id.date);
-
-        new Setuprecyclerview().execute();
-
-
-
-//
-//
-//        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//
-//
-//            @RequiresApi(api = Build.VERSION_CODES.M)
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//
-//                int currentFirstVisible = linearLayoutManager.findFirstVisibleItemPosition();
-//
-//                try {
-//                   myjsonobject = myjsonarray.getJSONObject(currentFirstVisible + A);
-//
-//                    String partnO = new String();
-//                    String partdate = new String();
-//                    int partnoInt = 0;
-////                    dimension1_3 = new ArrayList<>();
-//
-//
-//                    if (myjsonobject.has("partNo")) {
-//                        partnO = myjsonobject.getString("partNo");
-//
-//
-//                    }
-//
-//
-//                    if (myjsonobject.has("partdate")) {
-//                        partdate = myjsonobject.getString("partdate");
-//
-//
-//                    }
-//
-//                 partnumber.setText("Part Number: " + partnO + ",");
-//                    date.setText("Date: " + partdate);
-//
-//                    partnumber.setTextAppearance(R.style.nimbusromno9lreg);
-//                    date.setTextAppearance(R.style.nimbusromno9lreg);
-//
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//
-//
-//                // ChangePartNumber(currentFirstVisible);
-//
-//              /* String StringCurrentFirstVisible = String.valueOf(currentFirstVisible);
-//               new  SendPostRequest2().execute(StringCurrentFirstVisible); */
-//
-//                if (currentFirstVisible > firstVisibleInListview)
-//                    Log.i("RecyclerView scrolled: ", "scroll up!");
-//                else
-//                    Log.i("RecyclerView scrolled: ", "scroll down!");
-//
-//                firstVisibleInListview = currentFirstVisible;
-//
-//            }
-//
-//        });
-        return rootView;
-        // return inflater.inflate(R.layout.fragment_fragment1, container, false);
-
     }
 
     // TODO: Rename method, update argument and hook method into UI event

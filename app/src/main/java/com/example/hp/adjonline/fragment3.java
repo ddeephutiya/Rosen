@@ -1,12 +1,19 @@
 package com.example.hp.adjonline;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toolbar;
 
 
 /**
@@ -26,7 +33,7 @@ public class fragment3 extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+Toolbar toolbar;
     //private OnFragmentInteractionListener mListener;
 
     public fragment3() {
@@ -60,11 +67,22 @@ public class fragment3 extends Fragment {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_fragment3, container, false);
+       View rootview= inflater.inflate(R.layout.fragment_fragment3, container, false);
+//        toolbar=rootview.findViewById(R.id.contactus);
+//        toolbar.setTitle("Document");
+//        toolbar.setTitleTextAppearance(this,R.style.amaticboldColor);
+//        final TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+//        mTitle.setText("About Us");
+//        mTitle.setTextColor(Color.BLACK);
+//        mTitle.setGravity(Gravity.NO_GRAVITY);
+//        toolbar.setBackgroundColor(Color.WHITE);
+//        setSupportActionBar(toolbar);
+        return rootview;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -73,7 +91,7 @@ public class fragment3 extends Fragment {
 //            mListener.onFragmentInteraction(uri);
 //        }
 //    }
-//
+
 //    @Override
 //    public void onAttach(Context context) {
 //        super.onAttach(context);

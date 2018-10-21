@@ -14,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,13 +38,7 @@ public class MainActivity extends AppCompatActivity {
             // R.drawable.icons8_shutdown_24
     };
     private static int navItemIndex=0;
-//    private void setupTabIcons() {
-//        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
-//        tabLayout.getTabAt(1).setIcon(tabIcons[1]);
-//        tabLayout.getTabAt(2).setIcon(tabIcons[2]);
-//        tabLayout.getTabAt(3).setIcon(tabIcons[3]);
-//        //  tabLayout.getTabAt(4).setIcon(tabIcons[4]);
-//    }
+
 
     private void setupViewPager(ViewPager viewPager) {
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
@@ -53,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new fragment1(), "Menu");
         viewPager.setAdapter(adapter);
     }
+
         @Override
     protected void onStart() {
         super.onStart();
@@ -95,6 +91,43 @@ public class MainActivity extends AppCompatActivity {
         //   getSupportActionBar().setIcon(R.mipmap.ic_launcher);
 
         setUpNavigationView();
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if(tab.getPosition()==3)
+                {
+                    mTitle.setText("Allahabad Daily Judgments");
+                    mTitle.setTextAppearance(R.style.nimbusromno9lreg);
+                    drawer.openDrawer(Gravity.LEFT);
+                }
+                if(tab.getPosition()==2)
+                {
+                    mTitle.setText("Contact Us");
+                    mTitle.setTextAppearance(R.style.nimbusromno9lreg);
+                }
+                if(tab.getPosition()==1)
+                {
+                    mTitle.setText("Search");
+                    mTitle.setTextAppearance(R.style.nimbusromno9lreg);
+                }
+                if(tab.getPosition()==0)
+                {
+                    mTitle.setText("Allahabad Daily Judgments");
+                    mTitle.setTextAppearance(R.style.nimbusromno9lreg);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
 
@@ -207,9 +240,7 @@ public class MainActivity extends AppCompatActivity {
                     menuItem.setChecked(true);
                 }
                 menuItem.setChecked(true);
-
                 //loadHomeFragment();
-
                 return true;
             }
         });

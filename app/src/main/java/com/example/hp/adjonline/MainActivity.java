@@ -11,11 +11,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.ic_action_home,
             R.drawable.ic_action_search,
             R.drawable.ic_action_person,
-            R.drawable.ic_action_restaurant_menu,
+            R.drawable.ic_action_menu,
             // R.drawable.icons8_shutdown_24
     };
     private static int navItemIndex=0;
@@ -80,16 +82,19 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         mTitle.setText("Allahabad Daily Judgments");
+
         mTitle.setTextAppearance(R.style.nimbusromno9lreg);
 
-
+        mTitle.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
         toolbar.setNavigationIcon(null);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.adjlogonew);
         //  getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         //  getSupportActionBar().setDisplayShowHomeEnabled(false);
         //   getSupportActionBar().setIcon(R.mipmap.ic_launcher);
-
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
         setUpNavigationView();
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -97,23 +102,24 @@ public class MainActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 if(tab.getPosition()==3)
                 {
-                    mTitle.setText("Allahabad Daily Judgments");
+
+                    mTitle.setText("    Allahabad Daily Judgments");
                     mTitle.setTextAppearance(R.style.nimbusromno9lreg);
                     drawer.openDrawer(Gravity.LEFT);
                 }
                 if(tab.getPosition()==2)
                 {
-                    mTitle.setText("Contact Us");
+                    mTitle.setText("    Contact Us");
                     mTitle.setTextAppearance(R.style.nimbusromno9lreg);
                 }
                 if(tab.getPosition()==1)
                 {
-                    mTitle.setText("Search");
+                    mTitle.setText("    Search");
                     mTitle.setTextAppearance(R.style.nimbusromno9lreg);
                 }
                 if(tab.getPosition()==0)
                 {
-                    mTitle.setText("Allahabad Daily Judgments");
+                    mTitle.setText("    Allahabad Daily Judgments");
                     mTitle.setTextAppearance(R.style.nimbusromno9lreg);
                 }
             }

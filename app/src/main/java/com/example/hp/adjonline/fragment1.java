@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -67,6 +68,7 @@ public class fragment1 extends Fragment {
     JSONArray mjsonarr;
     LinearLayoutManager linearLayoutManager;
     Adapter  mAdapter;
+    SwipeRefreshLayout mSwipeRefresh;
     //private OnFragmentInteractionListener mListener;
 
     public fragment1() {
@@ -107,6 +109,7 @@ public class fragment1 extends Fragment {
 
         final View rootView = inflater.inflate(R.layout.fragment_fragment1, container, false);
         data=new ArrayList<>();
+        mSwipeRefresh=rootView.findViewById(R.id.swipeRefresh);
         recyclerView=rootView.findViewById(R.id.recycler);
         linearLayoutManager=new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -114,7 +117,18 @@ public class fragment1 extends Fragment {
         new Setuprecyclerview().execute();
 //        mAdapter= new Adapter(getContext(), data);
 //        recyclerView.setAdapter(mAdapter);
+        mSwipeRefresh.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        //Log.i(LOG_TAG, "onRefresh called from SwipeRefreshLayout");
 
+                        // This method performs the actual data-refresh operation.
+                        // The method calls setRefreshing(false) when it's finished.
+                        new Setuprecyclerview().execute();
+                    }
+                }
+        );
         recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getContext(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
@@ -195,13 +209,13 @@ public class fragment1 extends Fragment {
     {
         URL url;
         HttpURLConnection conn;
-        final ProgressDialog progressDialog = new ProgressDialog(getContext());
+//        final ProgressDialog progressDialog = new ProgressDialog(getContext());
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog.setIndeterminate(true);
-            progressDialog.setMessage("Loading data...");
-            progressDialog.show();
+//            progressDialog.setIndeterminate(true);
+//            progressDialog.setMessage("Loading data...");
+//            progressDialog.show();
         }
 
         @Override
@@ -215,6 +229,7 @@ public class fragment1 extends Fragment {
 
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
+                mSwipeRefresh.setRefreshing(false);
                 e.printStackTrace();
                 return e.toString();
             }
@@ -229,6 +244,7 @@ public class fragment1 extends Fragment {
                 conn.setDoOutput(true);
 
             } catch (IOException e1) {
+                mSwipeRefresh.setRefreshing(false);
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
                 return e1.toString();
@@ -255,11 +271,12 @@ public class fragment1 extends Fragment {
                     return (result.toString());
 
                 } else {
-
+                    mSwipeRefresh.setRefreshing(false);
                     return ("unsuccessful");
                 }
 
             } catch (IOException e) {
+                mSwipeRefresh.setRefreshing(false);
                 e.printStackTrace();
                 return e.toString();
             } finally {
@@ -278,11 +295,13 @@ public class fragment1 extends Fragment {
                 //result.isEmpty();
 
             } catch (JSONException e) {
+                mSwipeRefresh.setRefreshing(false);
+                Toast.makeText( getContext(),"Please Check your Internet Connection and try again", Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
 
 //            data=new ArrayList<>();
-            progressDialog.dismiss();
+//            progressDialog.dismiss();
 
             try {
                 JSONArray jArray = new JSONArray(result);
@@ -301,11 +320,13 @@ public class fragment1 extends Fragment {
                 // Setup and Handover data to recyclerview
                 mAdapter= new Adapter(getContext(), data);
                 recyclerView.setAdapter(mAdapter);
+                mSwipeRefresh.setRefreshing(false);
 //                RecyclerViewPositionHelper recyclerViewPositionHelper=new RecyclerViewPositionHelper(recyclerView);
 //                recyclerViewPositionHelper.
 
             } catch (JSONException e) {
-                Toast.makeText( getContext(), e.toString(), Toast.LENGTH_LONG).show();
+                mSwipeRefresh.setRefreshing(false);
+                Toast.makeText( getContext(),"Please Check your Internet Connection and try again", Toast.LENGTH_LONG).show();
             }
 
         }

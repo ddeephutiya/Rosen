@@ -26,7 +26,7 @@ public class fragment2 extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+OnFragmentInteractionListener mListener;
     //private OnFragmentInteractionListener mListener;
 
     public fragment2() {
@@ -66,14 +66,15 @@ public class fragment2 extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_fragment2, container, false);
     }
-
+//
 //    // TODO: Rename method, update argument and hook method into UI event
 //    public void onButtonPressed(Uri uri) {
 //        if (mListener != null) {
 //            mListener.onFragmentInteraction(uri);
+//
 //        }
 //    }
-
+//
 //    @Override
 //    public void onAttach(Context context) {
 //        super.onAttach(context);

@@ -6,4 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".SettingActivity">
 
+    <include layout="@layout/toolbar"
+        android:id="@+id/settings"
+        />
+
 </android.support.constraint.ConstraintLayout>

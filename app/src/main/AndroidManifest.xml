@@ -24,7 +24,15 @@
         <activity android:name=".activity_full_judgement" />
         <activity android:name=".AboutUsActivity" />
         <activity android:name=".PrivacyPolicyActivity" />
-        <activity android:name=".SettingActivity"></activity>
+        <activity android:name=".SettingActivity"/>
+        <activity android:name=".CitationSearch"/>
+        <activity android:name=".AdvanceSearch"/>
+        <activity android:name=".DateSearch"/>
+        <activity android:name=".PartySearch"/>
+        <activity android:name=".Viewer"/>
+        <activity android:name=".AdvanceSearchFilter">
+
+        </activity>
     </application>
 
 </manifest>

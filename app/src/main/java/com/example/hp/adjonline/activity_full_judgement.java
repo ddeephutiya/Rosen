@@ -1,6 +1,7 @@
 package com.example.hp.adjonline;
 
 import android.app.DownloadManager;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -12,9 +13,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.DownloadListener;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -34,13 +38,15 @@ public class activity_full_judgement extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_judgement);
-
+        imageButton=findViewById(R.id.shareButton);
         Intent intentExtra=getIntent();
         link=intentExtra.getStringExtra("link");
-        toolbar = (Toolbar)findViewById(R.id.Resulttoolbar);
+        final String subject=intentExtra.getStringExtra("subject");
+        Log.e("LINK",link);
+        toolbar =findViewById(R.id.Resulttoolbar);
         toolbar.setTitle("Document");
         toolbar.setTitleTextAppearance(this,R.style.amaticboldColor);
-        final TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        final TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
         mTitle.setText("Judgment");
         mTitle.setTextColor(Color.BLACK);
         mTitle.setGravity(Gravity.NO_GRAVITY);
@@ -55,12 +61,30 @@ public class activity_full_judgement extends AppCompatActivity {
                 finish();
             }
         });
-        webView = (WebView) findViewById(R.id.fullJudgment);
+        webView =findViewById(R.id.fullJudgment);
         WebSettings webSettings = webView.getSettings();
         webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setJavaScriptEnabled(true);
-
+        webView.getSettings().setUseWideViewPort(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.setWebChromeClient(new WebChromeClient());
+        webView.setWebViewClient(new WebViewClient(){
+            final ProgressDialog progDailog = new ProgressDialog(activity_full_judgement.this,
+                    R.style.AppTheme_Dark_Dialog);
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                progDailog.show();
+                return super.shouldOverrideUrlLoading(view, url);
+            }
+            @Override
+            public void onPageFinished(WebView view, final String url) {
+                progDailog.dismiss();
+            }
+        });
+        webView.getSettings().setDomStorageEnabled(true);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setTextSize(WebSettings.TextSize.NORMAL);
 
         if (Build.VERSION.SDK_INT >= 23)
         {
@@ -81,7 +105,8 @@ public class activity_full_judgement extends AppCompatActivity {
                         dm.enqueue(request);
                     }
                 });
-            } else {
+            }
+            else {
                 // Code for permission
 
                 webView.setDownloadListener(new DownloadListener() {
@@ -128,10 +153,32 @@ public class activity_full_judgement extends AppCompatActivity {
             });
         }
 
+        String [] arrOfStr = link.split("com", 2);
+
+        String mera_link = arrOfStr[0]+"com/hviewer";
+        String[] fir_mera_link = arrOfStr[1].split("/myadj");
+        mera_link = mera_link+fir_mera_link[1]+"&zm=";
         webSettings.setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
-        webView.setWebViewClient(new WebViewClient());
-        webView.loadUrl(link);
+        webView.loadUrl(mera_link);
+
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                String shareBody = link;
+                String shareSubject =subject;
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSubject);
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sharingIntent, "Share via"));
+
+            }
+        });
+
+
+
+
     }
 
     private boolean checkPermission() {
@@ -153,5 +200,5 @@ public class activity_full_judgement extends AppCompatActivity {
         }
     }
 
-}
 
+}

@@ -30,6 +30,9 @@ public class fragment2 extends Fragment {
     private String mParam2;
 OnFragmentInteractionListener mListener;
 Button citSearch;
+Button dateSearch;
+Button partySearch;
+Button advSearch;
     //private OnFragmentInteractionListener mListener;
 
     public fragment2() {
@@ -72,10 +75,37 @@ Button citSearch;
       citSearch.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
-              Intent i=new Intent(getContext(),DateSearch.class);
+              Intent i=new Intent(getContext(),CitationSearch.class);
               startActivity(i);
           }
       });
+
+        dateSearch=rootview.findViewById(R.id.datesearch);
+        dateSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(getContext(),DateSearch.class);
+                startActivity(i);
+            }
+        });
+
+        partySearch=rootview.findViewById(R.id.partysearch);
+        partySearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(getContext(),PartySearch.class);
+                startActivity(i);
+            }
+        });
+
+        advSearch=rootview.findViewById(R.id.advsearch);
+        advSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(getContext(),AdvanceSearch.class);
+                startActivity(i);
+            }
+        });
       return rootview;
     }
 //

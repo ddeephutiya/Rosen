@@ -60,6 +60,7 @@ public class AdvanceSearch extends AppCompatActivity {
             AdvSearchResult=s;
             Intent i=new Intent(AdvanceSearch.this,Viewer.class);
             i.putExtra("INPUTTEXT",editText.getText().toString());
+            i.putExtra("FLAG","1");
            // i.putExtra("ADVANCESEARCH",s);
             progressDialog.dismiss();
             if(s.length()==2){
